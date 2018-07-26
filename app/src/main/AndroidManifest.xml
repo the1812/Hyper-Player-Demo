@@ -10,7 +10,7 @@
     android:theme="@style/AppTheme">
     <activity
       android:name=".view.PlayerActivity"
-      android:label="@string/title_activity_player"
+      android:label="@string/player"
       android:theme="@style/AppTheme.NoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>

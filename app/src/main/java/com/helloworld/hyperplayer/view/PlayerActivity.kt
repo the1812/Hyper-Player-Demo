@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.webkit.URLUtil
 import android.widget.SeekBar
 import com.helloworld.hyperplayer.R
 import kotlinx.android.synthetic.main.activity_player.*
@@ -138,6 +139,7 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             player.start()
             buttonPlayPause.visibility = View.VISIBLE
             seekBar.visibility = View.VISIBLE
+            title = URLUtil.guessFileName(path, null, null)
         }
     }
 
