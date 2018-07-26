@@ -6,5 +6,6 @@
   <string name="settings">Settings</string>
   <string name="open">Open</string>
   <string name="play_or_pause">Play / Pause</string>
-
+  <string name="player">Player</string>
+  <string name="actions">Actions</string>
 </resources>

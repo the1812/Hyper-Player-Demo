@@ -4,13 +4,16 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.SeekBar
 import com.helloworld.hyperplayer.R
 import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.app_bar_player.*
@@ -20,6 +23,7 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 {
     private lateinit var player: MediaPlayer
     private val pickFileCode = 1
+    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -32,18 +36,36 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         drawer.addDrawerListener(toggle)
         toggle.syncState()
 
+        updateSeekBar = Runnable {
+            runOnUiThread {
+                seekBar.progress = player.currentPosition
+            }
+            handler.postDelayed(updateSeekBar, 1000)
+        }
+
         nav.setNavigationItemSelectedListener(this)
         buttonPlayPause.visibility = View.GONE
+        seekBar.visibility = View.GONE
         buttonPlayPause.setOnClickListener {
             if (player.isPlaying)
             {
                 player.pause()
+                handler.removeCallbacks(updateSeekBar)
             }
             else
             {
                 player.start()
+                updateSeekBar?.run()
             }
         }
+
+        seekBar.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener
+            {
+                override fun onProgressChanged(seekbar: SeekBar?, progress: Int, fromUser: Boolean) {}
+                override fun onStartTrackingTouch(seekbar: SeekBar?) {}
+                override fun onStopTrackingTouch(seekbar: SeekBar?) = player.seekTo(seekBar.progress)
+            })
     }
 
     override fun onBackPressed()
@@ -105,12 +127,17 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
+    private var updateSeekBar: Runnable? = null
+
     private fun openFile(path: String)
     {
         player = MediaPlayer.create(this, Uri.parse(path))
         player.setOnPreparedListener {
+            seekBar.max = player.duration
+            updateSeekBar?.run()
             player.start()
             buttonPlayPause.visibility = View.VISIBLE
+            seekBar.visibility = View.VISIBLE
         }
     }
 
