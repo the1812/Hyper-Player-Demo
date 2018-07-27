@@ -48,10 +48,12 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             if (player.isPlaying)
             {
                 player.pause()
+                buttonPlayPause.setImageResource(R.drawable.ic_play_circle)
             }
             else
             {
                 player.start()
+                buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
             }
         }
         seekBar.setOnSeekBarChangeListener(
@@ -134,6 +136,7 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         buttonPlayPause.isEnabled = true
         seekBar.isEnabled = true
         textOpenFileHint.visibility = View.GONE
+        buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
 
         val info = getMusicInfo(path)
         title = info.title

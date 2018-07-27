@@ -8,12 +8,15 @@
   tools:context=".view.PlayerActivity"
   tools:showIn="@layout/app_bar_player">
 
-  <Button
+  <ImageButton
     android:id="@+id/buttonPlayPause"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    android:text="@string/play_or_pause"
+    android:background="@android:color/transparent"
+    android:contentDescription="@string/player_play_pause"
+    android:src="@drawable/ic_play_circle"
+    android:text="@string/player_play_pause"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent" />
@@ -55,6 +58,7 @@
     android:layout_marginTop="16dp"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="16dp"
+    android:contentDescription="@string/player_album_image"
     app:layout_constraintBottom_toTopOf="@+id/seekBar"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -67,7 +71,7 @@
     android:layout_height="wrap_content"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="8dp"
-    android:text="--:-- / --:--"
+    android:text="@string/player_empty_time"
     app:layout_constraintBottom_toTopOf="@+id/buttonPlayPause"
     app:layout_constraintEnd_toEndOf="parent" />
 
@@ -75,7 +79,7 @@
     android:id="@+id/textOpenFileHint"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/hint_open_file"
+    android:text="@string/player_hint_open_file"
     app:layout_constraintBottom_toBottomOf="@+id/imageAlbum"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
