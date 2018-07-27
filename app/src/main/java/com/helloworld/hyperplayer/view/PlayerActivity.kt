@@ -16,6 +16,7 @@ import android.view.View
 import android.webkit.URLUtil
 import android.widget.SeekBar
 import com.helloworld.hyperplayer.R
+import com.helloworld.hyperplayer.model.getMusicInfo
 import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.app_bar_player.*
 import kotlinx.android.synthetic.main.content_player.*
@@ -139,8 +140,12 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             player.start()
             buttonPlayPause.visibility = View.VISIBLE
             seekBar.visibility = View.VISIBLE
-            title = URLUtil.guessFileName(path, null, null)
         }
+        val info = getMusicInfo(path)
+        title = info.title
+        textArtist.text = info.artist
+        textAlbum.text = info.album
+        imageAlbum.setImageBitmap(info.albumImage)
     }
 
     override fun onDestroy()
