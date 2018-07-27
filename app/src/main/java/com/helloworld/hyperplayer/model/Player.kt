@@ -31,6 +31,7 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     var mediaSource: String = ""
         set(value)
         {
+            destroy()
             mediaPlayer = MediaPlayer.create(Application.context, Uri.parse(value))
             mediaPlayer.setOnPreparedListener {
                 seekBar.progress = 0
