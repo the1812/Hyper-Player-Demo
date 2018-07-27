@@ -10,6 +10,7 @@
     android:theme="@style/AppTheme"
     android:name=".Application">
     <activity
+      android:launchMode="singleTask"
       android:name=".view.PlayerActivity"
       android:label="@string/player"
       android:theme="@style/AppTheme.NoActionBar">

@@ -6,6 +6,7 @@ import android.os.Handler
 import android.widget.SeekBar
 import android.widget.TextView
 import com.helloworld.hyperplayer.Application
+import java.util.concurrent.TimeUnit
 
 class Player(val seekBar: SeekBar, val textTime: TextView)
 {
@@ -20,10 +21,13 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
             seekBar.post {
                 seekBar.progress = mediaPlayer.currentPosition
             }
+            textTime.post {
+                val text = "${getTime(mediaPlayer.currentPosition)} / ${getTime(mediaPlayer.duration)}"
+                textTime.text = text
+            }
             handler.postDelayed(updateUi, postInterval)
         }
     }
-
     var mediaSource: String = ""
         set(value)
         {
@@ -31,11 +35,12 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
             mediaPlayer.setOnPreparedListener {
                 seekBar.progress = 0
                 seekBar.max = mediaPlayer.duration
-                updateUi.run()
-                mediaPlayer.start()
+                start()
             }
         }
 
+    fun stopUpdateUi() = handler.removeCallbacks(updateUi)
+    fun startUpdateUi() = updateUi.run()
     fun destroy()
     {
         mediaPlayer.stop()
@@ -44,17 +49,17 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     fun start()
     {
         mediaPlayer.start()
-        updateUi.run()
+        startUpdateUi()
     }
     fun pause()
     {
         mediaPlayer.pause()
-        handler.removeCallbacks(updateUi)
+        stopUpdateUi()
     }
     fun stop()
     {
         mediaPlayer.stop()
-        handler.removeCallbacks(updateUi)
+        stopUpdateUi()
     }
     fun seekTo(position: Int)
     {
@@ -62,5 +67,7 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     }
     val isPlaying
         get() = mediaPlayer.isPlaying
+    val duration
+        get() = mediaPlayer.duration
 
 }

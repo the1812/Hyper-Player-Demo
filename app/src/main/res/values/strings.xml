@@ -7,4 +7,5 @@
   <string name="play_or_pause">Play / Pause</string>
   <string name="player">Player</string>
   <string name="actions">Actions</string>
+  <string name="hint_open_file">Open file to play</string>
 </resources>

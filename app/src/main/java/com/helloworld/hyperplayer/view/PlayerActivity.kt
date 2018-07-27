@@ -18,6 +18,7 @@ import android.widget.SeekBar
 import com.helloworld.hyperplayer.R
 import com.helloworld.hyperplayer.model.Player
 import com.helloworld.hyperplayer.model.getMusicInfo
+import com.helloworld.hyperplayer.model.getTime
 import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.app_bar_player.*
 import kotlinx.android.synthetic.main.content_player.*
@@ -32,17 +33,17 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
         setSupportActionBar(toolbar)
-
         val toggle = ActionBarDrawerToggle(
             this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer.addDrawerListener(toggle)
         toggle.syncState()
+        nav.setNavigationItemSelectedListener(this)
 
         player = Player(seekBar, textTime)
 
-        nav.setNavigationItemSelectedListener(this)
-        buttonPlayPause.visibility = View.GONE
-        seekBar.visibility = View.GONE
+        buttonPlayPause.isEnabled = false
+        seekBar.isEnabled = false
+
         buttonPlayPause.setOnClickListener {
             if (player.isPlaying)
             {
@@ -53,13 +54,23 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 player.start()
             }
         }
-
         seekBar.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener
             {
-                override fun onProgressChanged(seekbar: SeekBar?, progress: Int, fromUser: Boolean) {}
-                override fun onStartTrackingTouch(seekbar: SeekBar?) {}
-                override fun onStopTrackingTouch(seekbar: SeekBar?) = player.seekTo(seekBar.progress)
+                override fun onProgressChanged(seekbar: SeekBar?, progress: Int, fromUser: Boolean)
+                {
+                    val text = "${getTime(progress)} / ${getTime(player.duration)}"
+                    textTime.text = text
+                }
+                override fun onStartTrackingTouch(seekbar: SeekBar?)
+                {
+                    player.stopUpdateUi()
+                }
+                override fun onStopTrackingTouch(seekbar: SeekBar?)
+                {
+                    player.seekTo(seekBar.progress)
+                    player.startUpdateUi()
+                }
             })
     }
 
@@ -120,8 +131,9 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     private fun openFile(path: String)
     {
         player.mediaSource = path
-        buttonPlayPause.visibility = View.VISIBLE
-        seekBar.visibility = View.VISIBLE
+        buttonPlayPause.isEnabled = true
+        seekBar.isEnabled = true
+        textOpenFileHint.visibility = View.GONE
 
         val info = getMusicInfo(path)
         title = info.title
