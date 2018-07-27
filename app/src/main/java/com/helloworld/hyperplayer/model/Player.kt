@@ -41,7 +41,26 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
         mediaPlayer.stop()
         mediaPlayer.release()
     }
-    fun start() = mediaPlayer.start()
-    fun pause() = mediaPlayer.pause()
-    fun stop() = mediaPlayer.stop()
+    fun start()
+    {
+        mediaPlayer.start()
+        updateUi.run()
+    }
+    fun pause()
+    {
+        mediaPlayer.pause()
+        handler.removeCallbacks(updateUi)
+    }
+    fun stop()
+    {
+        mediaPlayer.stop()
+        handler.removeCallbacks(updateUi)
+    }
+    fun seekTo(position: Int)
+    {
+        mediaPlayer.seekTo(position)
+    }
+    val isPlaying
+        get() = mediaPlayer.isPlaying
+
 }

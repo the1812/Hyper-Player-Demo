@@ -16,6 +16,7 @@ import android.view.View
 import android.webkit.URLUtil
 import android.widget.SeekBar
 import com.helloworld.hyperplayer.R
+import com.helloworld.hyperplayer.model.Player
 import com.helloworld.hyperplayer.model.getMusicInfo
 import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.app_bar_player.*
@@ -23,9 +24,8 @@ import kotlinx.android.synthetic.main.content_player.*
 
 class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener
 {
-    private lateinit var player: MediaPlayer
     private val pickFileCode = 1
-    private val handler = Handler()
+    private lateinit var player: Player
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -38,12 +38,7 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         drawer.addDrawerListener(toggle)
         toggle.syncState()
 
-        updateSeekBar = Runnable {
-            runOnUiThread {
-                seekBar.progress = player.currentPosition
-            }
-            handler.postDelayed(updateSeekBar, 1000)
-        }
+        player = Player(seekBar, textTime)
 
         nav.setNavigationItemSelectedListener(this)
         buttonPlayPause.visibility = View.GONE
@@ -52,12 +47,10 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             if (player.isPlaying)
             {
                 player.pause()
-                handler.removeCallbacks(updateSeekBar)
             }
             else
             {
                 player.start()
-                updateSeekBar?.run()
             }
         }
 
@@ -84,16 +77,12 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
     {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.player, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean
     {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId)
         {
             R.id.action_settings -> true
@@ -103,7 +92,6 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean
     {
-        // Handle navigation view item clicks here.
         when (item.itemId)
         {
             R.id.nav_open    ->
@@ -129,18 +117,12 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
-    private var updateSeekBar: Runnable? = null
-
     private fun openFile(path: String)
     {
-        player = MediaPlayer.create(this, Uri.parse(path))
-        player.setOnPreparedListener {
-            seekBar.max = player.duration
-            updateSeekBar?.run()
-            player.start()
-            buttonPlayPause.visibility = View.VISIBLE
-            seekBar.visibility = View.VISIBLE
-        }
+        player.mediaSource = path
+        buttonPlayPause.visibility = View.VISIBLE
+        seekBar.visibility = View.VISIBLE
+
         val info = getMusicInfo(path)
         title = info.title
         textArtist.text = info.artist
@@ -151,7 +133,6 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     override fun onDestroy()
     {
         super.onDestroy()
-        player.stop()
-        player.release()
+        player.destroy()
     }
 }
