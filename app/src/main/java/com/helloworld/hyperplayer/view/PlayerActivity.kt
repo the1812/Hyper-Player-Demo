@@ -1,19 +1,14 @@
 package com.helloworld.hyperplayer.view
 
 import android.content.Intent
-import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.webkit.URLUtil
 import android.widget.SeekBar
 import com.helloworld.hyperplayer.R
 import com.helloworld.hyperplayer.model.Player
@@ -38,6 +33,7 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         nav.setNavigationItemSelectedListener(this)
+        title = getString(R.string.player)
 
         player = Player(seekBar, textTime)
 
