@@ -8,6 +8,9 @@
       android:checked="true"
       android:id="@+id/nav_player"
       android:title="@string/player"/>
+    <item
+      android:id="@+id/nav_playlist"
+      android:title="@string/playlist"/>
   </group>
   <item android:title="@string/actions">
     <menu>

@@ -17,13 +17,7 @@ import kotlinx.android.synthetic.main.fragment_player.*
 
 class PlayerFragment : Fragment()
 {
-    private val pickFileCode = 1
     private lateinit var player: Player
-
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
@@ -88,10 +82,5 @@ class PlayerFragment : Fragment()
     {
         super.onDestroy()
         player.destroy()
-    }
-    companion object
-    {
-        @JvmStatic
-        fun newInstance() = PlayerFragment()
     }
 }

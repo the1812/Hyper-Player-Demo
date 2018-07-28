@@ -3,6 +3,7 @@ package com.helloworld.hyperplayer.view
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -21,6 +22,7 @@ import kotlinx.android.synthetic.main.content_player.*
 class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener
 {
     private val pickFileCode = 1
+    private lateinit var fragments: Map<Int, Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -33,6 +35,11 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         toggle.syncState()
         nav.setNavigationItemSelectedListener(this)
         title = getString(R.string.player)
+
+        fragments = mapOf(
+            R.id.nav_player to fragment as PlayerFragment,
+            R.id.nav_playlist to PlaylistFragment()
+        )
     }
 
     override fun onBackPressed()
@@ -72,6 +79,20 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 intent.type = "audio/*"
                 startActivityForResult(intent, pickFileCode)
             }
+            R.id.nav_player ->
+            {
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment, fragments[R.id.nav_player])
+                    .commit()
+            }
+            R.id.nav_playlist ->
+            {
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment, fragments[R.id.nav_playlist])
+                    .commit()
+            }
         }
 
         drawer.closeDrawer(GravityCompat.START)
@@ -86,7 +107,7 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             {
                 pickFileCode ->
                 {
-                    (fragment as? PlayerFragment)?.openFile(data.dataString)
+                    (fragments[R.id.nav_player] as PlayerFragment).openFile(data.dataString)
                 }
             }
         }
