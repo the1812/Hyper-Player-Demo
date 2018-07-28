@@ -8,81 +8,14 @@
   tools:context=".view.PlayerActivity"
   tools:showIn="@layout/app_bar_player">
 
-  <ImageButton
-    android:id="@+id/buttonPlayPause"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:background="@android:color/transparent"
-    android:contentDescription="@string/player_play_pause"
-    android:src="@drawable/ic_play_circle"
-    android:text="@string/player_play_pause"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent" />
-
-  <SeekBar
-    android:id="@+id/seekBar"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="8dp"
-    app:layout_constraintBottom_toTopOf="@+id/buttonPlayPause"
-    app:layout_constraintEnd_toStartOf="@+id/textTime"
-    app:layout_constraintStart_toStartOf="parent" />
-
-  <TextView
-    android:id="@+id/textArtist"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="16dp"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
-
-  <TextView
-    android:id="@+id/textAlbum"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:layout_marginEnd="16dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
-
-  <ImageView
-    android:id="@+id/imageAlbum"
+  <fragment
+    android:id="@+id/fragment"
+    android:name="com.helloworld.hyperplayer.view.PlayerFragment"
     android:layout_width="0dp"
     android:layout_height="0dp"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="16dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginBottom="16dp"
-    android:contentDescription="@string/player_album_image"
-    app:layout_constraintBottom_toTopOf="@+id/seekBar"
+    app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/textArtist"
-    app:srcCompat="@android:color/transparent" />
-
-  <TextView
-    android:id="@+id/textTime"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="16dp"
-    android:layout_marginBottom="8dp"
-    android:text="@string/player_empty_time"
-    app:layout_constraintBottom_toTopOf="@+id/buttonPlayPause"
-    app:layout_constraintEnd_toEndOf="parent" />
-
-  <TextView
-    android:id="@+id/textOpenFileHint"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/player_hint_open_file"
-    app:layout_constraintBottom_toBottomOf="@+id/imageAlbum"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="@+id/imageAlbum" />
+    app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.content_player.*
 class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener
 {
     private val pickFileCode = 1
-    private lateinit var player: Player
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -34,42 +33,6 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         toggle.syncState()
         nav.setNavigationItemSelectedListener(this)
         title = getString(R.string.player)
-
-        player = Player(seekBar, textTime)
-
-        buttonPlayPause.isEnabled = false
-        seekBar.isEnabled = false
-
-        buttonPlayPause.setOnClickListener {
-            if (player.isPlaying)
-            {
-                player.pause()
-                buttonPlayPause.setImageResource(R.drawable.ic_play_circle)
-            }
-            else
-            {
-                player.start()
-                buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
-            }
-        }
-        seekBar.setOnSeekBarChangeListener(
-            object : SeekBar.OnSeekBarChangeListener
-            {
-                override fun onProgressChanged(seekbar: SeekBar?, progress: Int, fromUser: Boolean)
-                {
-                    val text = "${getTime(progress)} / ${getTime(player.duration)}"
-                    textTime.text = text
-                }
-                override fun onStartTrackingTouch(seekbar: SeekBar?)
-                {
-                    player.stopUpdateUi()
-                }
-                override fun onStopTrackingTouch(seekbar: SeekBar?)
-                {
-                    player.seekTo(seekBar.progress)
-                    player.startUpdateUi()
-                }
-            })
     }
 
     override fun onBackPressed()
@@ -121,29 +84,12 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         {
             when (requestCode)
             {
-                pickFileCode -> openFile(data.dataString)
+                pickFileCode ->
+                {
+                    (fragment as? PlayerFragment)?.openFile(data.dataString)
+                }
             }
         }
     }
 
-    private fun openFile(path: String)
-    {
-        player.mediaSource = path
-        buttonPlayPause.isEnabled = true
-        seekBar.isEnabled = true
-        textOpenFileHint.visibility = View.GONE
-        buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
-
-        val info = getMusicInfo(path)
-        title = info.title
-        textArtist.text = info.artist
-        textAlbum.text = info.album
-        imageAlbum.setImageBitmap(info.albumImage)
-    }
-
-    override fun onDestroy()
-    {
-        super.onDestroy()
-        player.destroy()
-    }
 }
