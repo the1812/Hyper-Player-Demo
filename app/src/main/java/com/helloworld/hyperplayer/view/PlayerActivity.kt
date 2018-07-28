@@ -40,11 +40,17 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     private fun switchFragment(fragmentClass: Class<out Fragment>)
     {
         val manager = supportFragmentManager
-        val fragment = manager.findFragmentByTag(fragmentClass.name)
+        var fragment = manager.findFragmentByTag(fragmentClass.name)
         val transaction  = manager.beginTransaction()
+
+        if (fragment is UpdateTitleFragment)
+        {
+            fragment.updateTitle()
+        }
         if (fragment == null)
         {
-            transaction.add(R.id.fragment, fragmentClass.newInstance() as Fragment, fragmentClass.name)
+            fragment = fragmentClass.newInstance() as Fragment
+            transaction.add(R.id.fragment, fragment, fragmentClass.name)
         }
         else
         {

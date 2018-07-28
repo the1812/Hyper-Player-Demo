@@ -17,7 +17,7 @@ import com.helloworld.hyperplayer.model.getMusicInfo
 import com.helloworld.hyperplayer.model.getTime
 import kotlinx.android.synthetic.main.fragment_player.*
 
-class PlayerFragment : Fragment()
+class PlayerFragment : Fragment(), UpdateTitleFragment
 {
     private lateinit var player: Player
     private var info: MusicInfo = MusicInfo.default
@@ -60,12 +60,13 @@ class PlayerFragment : Fragment()
                     player.seekTo(seekBar.progress)
                     player.startUpdateUi()
                 }
-            })
+            }
+        )
+        updateTitle()
     }
 
-    override fun onStart()
+    override fun updateTitle()
     {
-        super.onStart()
         activity?.title = info.title
     }
     fun openFile(path: String)

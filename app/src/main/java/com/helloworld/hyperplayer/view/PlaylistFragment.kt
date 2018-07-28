@@ -10,7 +10,7 @@ import android.view.ViewGroup
 
 import com.helloworld.hyperplayer.R
 
-class PlaylistFragment : Fragment()
+class PlaylistFragment : Fragment(), UpdateTitleFragment
 {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
@@ -21,12 +21,11 @@ class PlaylistFragment : Fragment()
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
         super.onActivityCreated(savedInstanceState)
-        activity?.title = getString(R.string.playlist)
+        updateTitle()
     }
 
-    override fun onStart()
+    override fun updateTitle()
     {
-        super.onStart()
         activity?.title = getString(R.string.playlist)
     }
 }
