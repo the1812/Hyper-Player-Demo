@@ -4,12 +4,14 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 
 import com.helloworld.hyperplayer.R
+import com.helloworld.hyperplayer.model.MusicInfo
 import com.helloworld.hyperplayer.model.Player
 import com.helloworld.hyperplayer.model.getMusicInfo
 import com.helloworld.hyperplayer.model.getTime
@@ -18,10 +20,12 @@ import kotlinx.android.synthetic.main.fragment_player.*
 class PlayerFragment : Fragment()
 {
     private lateinit var player: Player
+    private var info: MusicInfo = MusicInfo.default
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
         super.onActivityCreated(savedInstanceState)
+        Log.d("fragment", toString())
         player = Player(seekBar, textTime)
 
         buttonPlayPause.isEnabled = false
@@ -58,6 +62,12 @@ class PlayerFragment : Fragment()
                 }
             })
     }
+
+    override fun onStart()
+    {
+        super.onStart()
+        activity?.title = info.title
+    }
     fun openFile(path: String)
     {
         player.mediaSource = path
@@ -66,7 +76,7 @@ class PlayerFragment : Fragment()
         textOpenFileHint.visibility = View.GONE
         buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
 
-        val info = getMusicInfo(path)
+        info = getMusicInfo(path)
         activity?.title = info.title
         textArtist.text = info.artist
         textAlbum.text = info.album

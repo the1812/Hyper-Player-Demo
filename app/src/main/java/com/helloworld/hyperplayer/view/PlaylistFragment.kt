@@ -22,6 +22,11 @@ class PlaylistFragment : Fragment()
     {
         super.onActivityCreated(savedInstanceState)
         activity?.title = getString(R.string.playlist)
+    }
 
+    override fun onStart()
+    {
+        super.onStart()
+        activity?.title = getString(R.string.playlist)
     }
 }

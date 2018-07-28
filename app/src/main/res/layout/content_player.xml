@@ -8,14 +8,13 @@
   tools:context=".view.PlayerActivity"
   tools:showIn="@layout/app_bar_player">
 
-  <fragment
-    android:id="@+id/fragment"
-    android:name="com.helloworld.hyperplayer.view.PlayerFragment"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+  <FrameLayout
+  android:id="@+id/fragment"
+  android:layout_width="0dp"
+  android:layout_height="0dp"
+  app:layout_constraintBottom_toBottomOf="parent"
+  app:layout_constraintEnd_toEndOf="parent"
+  app:layout_constraintStart_toStartOf="parent"
+  app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

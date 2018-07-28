@@ -9,12 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.SeekBar
 import com.helloworld.hyperplayer.R
-import com.helloworld.hyperplayer.model.Player
-import com.helloworld.hyperplayer.model.getMusicInfo
-import com.helloworld.hyperplayer.model.getTime
 import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.app_bar_player.*
 import kotlinx.android.synthetic.main.content_player.*
@@ -22,7 +17,7 @@ import kotlinx.android.synthetic.main.content_player.*
 class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener
 {
     private val pickFileCode = 1
-    private lateinit var fragments: Map<Int, Fragment>
+    private lateinit var fragments: Map<Int, Class<out Fragment>>
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -34,14 +29,29 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         nav.setNavigationItemSelectedListener(this)
-        title = getString(R.string.player)
+
 
         fragments = mapOf(
-            R.id.nav_player to fragment as PlayerFragment,
-            R.id.nav_playlist to PlaylistFragment()
+            R.id.nav_player to PlayerFragment::class.java,
+            R.id.nav_playlist to PlaylistFragment::class.java
         )
+        switchFragment(PlayerFragment::class.java)
     }
-
+    private fun switchFragment(fragmentClass: Class<out Fragment>)
+    {
+        val manager = supportFragmentManager
+        val fragment = manager.findFragmentByTag(fragmentClass.name)
+        val transaction  = manager.beginTransaction()
+        if (fragment == null)
+        {
+            transaction.add(R.id.fragment, fragmentClass.newInstance() as Fragment, fragmentClass.name)
+        }
+        else
+        {
+            transaction.replace(R.id.fragment, fragment, fragmentClass.name)
+        }
+        transaction.commit()
+    }
     override fun onBackPressed()
     {
         if (drawer.isDrawerOpen(GravityCompat.START))
@@ -79,19 +89,12 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 intent.type = "audio/*"
                 startActivityForResult(intent, pickFileCode)
             }
-            R.id.nav_player ->
+            else ->
             {
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fragment, fragments[R.id.nav_player])
-                    .commit()
-            }
-            R.id.nav_playlist ->
-            {
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fragment, fragments[R.id.nav_playlist])
-                    .commit()
+                if (fragments.containsKey(item.itemId))
+                {
+                    switchFragment(fragments[item.itemId]!!)
+                }
             }
         }
 
@@ -107,7 +110,8 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             {
                 pickFileCode ->
                 {
-                    (fragments[R.id.nav_player] as PlayerFragment).openFile(data.dataString)
+                    val fragment = supportFragmentManager.findFragmentByTag(fragments[R.id.nav_player]!!.name)
+                    (fragment as? PlayerFragment)?.openFile(data.dataString)
                 }
             }
         }
