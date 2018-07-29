@@ -18,6 +18,7 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 {
     private val pickFileCode = 1
     private lateinit var fragments: Map<Int, Class<out Fragment>>
+    private lateinit var fragmentTitles: Map<Class<out Fragment>, String>
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -35,6 +36,10 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             R.id.nav_player to PlayerFragment::class.java,
             R.id.nav_playlist to PlaylistFragment::class.java
         )
+        fragmentTitles = mapOf(
+            PlayerFragment::class.java to getString(R.string.player),
+            PlaylistFragment::class.java to getString(R.string.playlist)
+        )
         switchFragment(PlayerFragment::class.java)
     }
     private fun switchFragment(fragmentClass: Class<out Fragment>)
@@ -43,10 +48,6 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         var fragment = manager.findFragmentByTag(fragmentClass.name)
         val transaction  = manager.beginTransaction()
 
-        if (fragment is UpdateTitleFragment)
-        {
-            fragment.updateTitle()
-        }
         if (fragment == null)
         {
             fragment = fragmentClass.newInstance() as Fragment
@@ -57,6 +58,8 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             transaction.replace(R.id.fragment, fragment, fragmentClass.name)
         }
         transaction.commit()
+
+        title = fragmentTitles[fragmentClass]
     }
     override fun onBackPressed()
     {

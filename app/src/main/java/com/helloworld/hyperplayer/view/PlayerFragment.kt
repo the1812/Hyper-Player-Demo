@@ -17,7 +17,7 @@ import com.helloworld.hyperplayer.model.getMusicInfo
 import com.helloworld.hyperplayer.model.getTime
 import kotlinx.android.synthetic.main.fragment_player.*
 
-class PlayerFragment : Fragment(), UpdateTitleFragment
+class PlayerFragment : Fragment()
 {
     private lateinit var player: Player
     private var info: MusicInfo = MusicInfo.default
@@ -62,13 +62,8 @@ class PlayerFragment : Fragment(), UpdateTitleFragment
                 }
             }
         )
-        updateTitle()
     }
 
-    override fun updateTitle()
-    {
-        activity?.title = info.title
-    }
     fun openFile(path: String)
     {
         player.mediaSource = path
@@ -78,7 +73,7 @@ class PlayerFragment : Fragment(), UpdateTitleFragment
         buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
 
         info = getMusicInfo(path)
-        activity?.title = info.title
+        textTitle.text = info.title
         textArtist.text = info.artist
         textAlbum.text = info.album
         imageAlbum.setImageBitmap(info.albumImage)
