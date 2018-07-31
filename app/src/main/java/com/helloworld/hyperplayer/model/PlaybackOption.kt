@@ -20,7 +20,7 @@ enum class PlaybackOption
         }
     },
     SingleLoop {
-        override fun next(playlist: Playlist, playingMusic: Music?): Music? = null
+        override fun next(playlist: Playlist, playingMusic: Music?): Music? = playingMusic
     },
     Random {
         override fun next(playlist: Playlist, playingMusic: Music?): Music?

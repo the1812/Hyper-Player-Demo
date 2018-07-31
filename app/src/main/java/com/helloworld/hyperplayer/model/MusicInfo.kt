@@ -31,6 +31,7 @@ fun getMusicInfo(path: String): MusicInfo
             .dropLastWhile { it != '.' }.dropLast(1)
     val artist = metadata.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST) ?: MusicInfo.default.artist
     val album = metadata.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM) ?: MusicInfo.default.album
-    val image = BitmapFactory.decodeByteArray(metadata.embeddedPicture, 0, metadata.embeddedPicture.size)
+    val image = if (metadata.embeddedPicture == null) null
+        else BitmapFactory.decodeByteArray(metadata.embeddedPicture, 0, metadata.embeddedPicture.size)
     return MusicInfo(title, artist, album, image)
 }
