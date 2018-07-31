@@ -37,6 +37,8 @@ class PlayerFragment : Fragment()
 
         buttonPlayPause.isEnabled = false
         seekBar.isEnabled = false
+        buttonNext.isEnabled = false
+        buttonPrevious.isEnabled = false
 
         buttonPlayPause.setOnClickListener {
             if (player.isPlaying)
@@ -73,6 +75,9 @@ class PlayerFragment : Fragment()
             player.playbackOption = playbackNextMap[player.playbackOption]!!
             buttonPlaybackOption.setImageResource(playbackResourceMap[player.playbackOption]!!)
         }
+        buttonNext.setOnClickListener {
+            player.next()
+        }
     }
 
     fun openPlaylist(vararg path: String)
@@ -85,6 +90,8 @@ class PlayerFragment : Fragment()
         seekBar.isEnabled = true
         textOpenFileHint.visibility = View.GONE
         buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
+        buttonNext.isEnabled = true
+        buttonPrevious.isEnabled = true
 
         updateMusicInfo(playlist.first())
     }

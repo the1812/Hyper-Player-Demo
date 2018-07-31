@@ -9,6 +9,8 @@ import android.widget.TextView
 import com.helloworld.hyperplayer.Application
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.max
+import kotlin.math.min
 
 class Player(val seekBar: SeekBar, val textTime: TextView)
 {
@@ -18,6 +20,7 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var playingMusic: Music? = null
 
+    var autoStart = true
     var playbackOption = PlaybackOption.PlaylistLoop
         set(value)
         {
@@ -39,7 +42,7 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
                 seekBar.progress = mediaPlayer.currentPosition
             }
             textTime.post {
-                val text = "${getTime(mediaPlayer.currentPosition)} / ${getTime(mediaPlayer.duration)}"
+                val text = "${getTime(min(mediaPlayer.currentPosition, mediaPlayer.duration))} / ${getTime(mediaPlayer.duration)}"
                 textTime.text = text
             }
             handler.postDelayed(updateUi, postInterval)
@@ -64,69 +67,31 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     {
         destroy()
         playingMusic = music
-        onChangeMusic?.invoke(music)
         mediaPlayer = MediaPlayer.create(Application.context, Uri.parse(music.path))
         mediaPlayer.setOnPreparedListener {
             seekBar.progress = 0
             seekBar.max = mediaPlayer.duration
-            start()
+            if (autoStart)
+            {
+                start()
+            }
+            onChangeMusic?.invoke(music)
             updatePlaybackOption()
+        }
+        mediaPlayer.setOnCompletionListener {
+            next()
         }
     }
     private fun updatePlaybackOption()
     {
-        when (playbackOption)
-        {
-            PlaybackOption.PlaylistLoop ->
-            {
-                mediaPlayer.isLooping = false
-                mediaPlayer.setOnCompletionListener {
-                    if (playingMusic != playlist.last())
-                    {
-                        val nextMusicIndex = playlist.indexOf(playingMusic) + 1
-                        if (nextMusicIndex >= playlist.count())
-                        {
-                            Log.e("Player", "Index unexpectedly out of range!")
-                        }
-                        else
-                        {
-                            val nextMusic = playlist.elementAt(nextMusicIndex)
-                            play(nextMusic)
-                        }
-                    }
-                    else
-                    {
-                        play(playlist.first())
-                    }
-                }
-            }
-            PlaybackOption.SingleLoop ->
-            {
-                mediaPlayer.isLooping = true
-                mediaPlayer.setOnCompletionListener(null)
-            }
-            PlaybackOption.Random ->
-            {
-                mediaPlayer.isLooping = false
-                mediaPlayer.setOnCompletionListener {
-                    val currentIndex = playlist.indexOf(playingMusic)
-                    var index = 0
-                    do
-                    {
-                        index = Random().nextInt(playlist.count())
-                    }
-                    while (index == currentIndex)
-                    val nextMusic = playlist.elementAt(index)
-                    play(nextMusic)
-                }
-            }
-        }
+        mediaPlayer.isLooping = playbackOption == PlaybackOption.SingleLoop
     }
     fun stopUpdateUi() = handler.removeCallbacks(updateUi)
     fun startUpdateUi() = updateUi.run()
     fun destroy()
     {
         mediaPlayer.stop()
+        mediaPlayer.reset()
         mediaPlayer.release()
     }
     fun start()
@@ -147,6 +112,14 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     fun seekTo(position: Int)
     {
         mediaPlayer.seekTo(position)
+    }
+    fun next()
+    {
+        val nextMusic = playbackOption.next(playlist, playingMusic)
+        if (nextMusic != null)
+        {
+            play(nextMusic)
+        }
     }
     val isPlaying
         get() = mediaPlayer.isPlaying

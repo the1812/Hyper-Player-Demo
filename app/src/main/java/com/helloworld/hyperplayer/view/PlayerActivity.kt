@@ -120,11 +120,17 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             {
                 pickFileCode ->
                 {
-                    val fragment = supportFragmentManager.findFragmentByTag(fragments[R.id.nav_player]!!.name)
-                    (fragment as? PlayerFragment)
-                        ?.openPlaylist(*(0..(data.clipData.itemCount - 1))
+                    val fragment = supportFragmentManager.findFragmentByTag(fragments[R.id.nav_player]!!.name) as PlayerFragment
+                    if (data.clipData != null)
+                    {
+                        fragment.openPlaylist(*(0..(data.clipData.itemCount - 1))
                             .map { data.clipData.getItemAt(it).uri.toString() }
                             .toTypedArray())
+                    }
+                    else
+                    {
+                        fragment.openPlaylist(data.dataString)
+                    }
                 }
             }
         }
