@@ -102,6 +102,7 @@
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:contentDescription="@string/playback_option"
+    android:padding="16dp"
     android:src="@drawable/ic_repeat"
     app:layout_constraintBottom_toBottomOf="@+id/buttonPlayPause"
     app:layout_constraintEnd_toEndOf="parent"
@@ -115,6 +116,7 @@
     android:layout_marginEnd="16dp"
     android:background="@android:color/transparent"
     android:contentDescription="@string/previous"
+    android:padding="4dp"
     android:src="@drawable/ic_skip_previous"
     app:layout_constraintBottom_toBottomOf="@+id/buttonPlayPause"
     app:layout_constraintEnd_toStartOf="@+id/buttonPlayPause"
@@ -127,8 +129,22 @@
     android:layout_marginStart="16dp"
     android:background="@android:color/transparent"
     android:contentDescription="@string/next"
+    android:padding="4dp"
     android:src="@drawable/ic_skip_next"
     app:layout_constraintBottom_toBottomOf="@+id/buttonPlayPause"
     app:layout_constraintStart_toEndOf="@+id/buttonPlayPause"
     app:layout_constraintTop_toTopOf="@+id/buttonPlayPause" />
+
+  <ImageButton
+    android:id="@+id/buttonHistory"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:contentDescription="@string/history"
+    android:padding="16dp"
+    android:src="@drawable/ic_history"
+    app:layout_constraintBottom_toBottomOf="@+id/buttonPrevious"
+    app:layout_constraintEnd_toStartOf="@+id/buttonPrevious"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="@+id/buttonPrevious" />
 </android.support.constraint.ConstraintLayout>

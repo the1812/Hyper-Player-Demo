@@ -33,8 +33,8 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
 
         fragments = mapOf(
-            R.id.nav_player to PlayerFragment::class.java,
-            R.id.nav_playlist to PlaylistFragment::class.java
+            R.id.nav_player to PlayerFragment::class.java
+            // R.id.nav_playlist to PlaylistFragment::class.java
         )
         fragmentTitles = mapOf(
             PlayerFragment::class.java to getString(R.string.player),
