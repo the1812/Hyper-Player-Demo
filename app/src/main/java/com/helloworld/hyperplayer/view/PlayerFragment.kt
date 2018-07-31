@@ -11,16 +11,23 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 
 import com.helloworld.hyperplayer.R
-import com.helloworld.hyperplayer.model.MusicInfo
-import com.helloworld.hyperplayer.model.Player
-import com.helloworld.hyperplayer.model.getMusicInfo
-import com.helloworld.hyperplayer.model.getTime
+import com.helloworld.hyperplayer.model.*
 import kotlinx.android.synthetic.main.fragment_player.*
 
 class PlayerFragment : Fragment()
 {
     private lateinit var player: Player
     private var info: MusicInfo = MusicInfo.default
+    private val playbackNextMap = mapOf(
+        PlaybackOption.PlaylistLoop to PlaybackOption.SingleLoop,
+        PlaybackOption.SingleLoop to PlaybackOption.Random,
+        PlaybackOption.Random to PlaybackOption.PlaylistLoop
+    )
+    private val playbackResourceMap = mapOf(
+        PlaybackOption.PlaylistLoop to R.drawable.ic_repeat,
+        PlaybackOption.SingleLoop to R.drawable.ic_repeat_one,
+        PlaybackOption.Random to R.drawable.ic_shuffle
+    )
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
@@ -62,21 +69,33 @@ class PlayerFragment : Fragment()
                 }
             }
         )
+        buttonPlaybackOption.setOnClickListener {
+            player.playbackOption = playbackNextMap[player.playbackOption]!!
+            buttonPlaybackOption.setImageResource(playbackResourceMap[player.playbackOption]!!)
+        }
     }
 
-    fun openFile(path: String)
+    fun openPlaylist(vararg path: String)
     {
-        player.mediaSource = path
+        val playlist = Playlist(*(path.map { Music(it) }.toTypedArray()))
+        player.playlist = playlist
+        player.onChangeMusic = this::updateMusicInfo
+
         buttonPlayPause.isEnabled = true
         seekBar.isEnabled = true
         textOpenFileHint.visibility = View.GONE
         buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
 
-        info = getMusicInfo(path)
-        textTitle.text = info.title
-        textArtist.text = info.artist
-        textAlbum.text = info.album
-        imageAlbum.setImageBitmap(info.albumImage)
+        updateMusicInfo(playlist.first())
+    }
+    private fun updateMusicInfo(music: Music)
+    {
+        with(music.info) {
+            textTitle.text = title
+            textArtist.text = artist
+            textAlbum.text = album
+            imageAlbum.setImageBitmap(albumImage)
+        }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?

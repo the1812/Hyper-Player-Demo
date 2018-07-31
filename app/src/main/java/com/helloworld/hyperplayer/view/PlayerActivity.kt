@@ -94,7 +94,8 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         {
             R.id.nav_open    ->
             {
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.type = "audio/*"
                 startActivityForResult(intent, pickFileCode)
             }
@@ -120,7 +121,10 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 pickFileCode ->
                 {
                     val fragment = supportFragmentManager.findFragmentByTag(fragments[R.id.nav_player]!!.name)
-                    (fragment as? PlayerFragment)?.openFile(data.dataString)
+                    (fragment as? PlayerFragment)
+                        ?.openPlaylist(*(0..(data.clipData.itemCount - 1))
+                            .map { data.clipData.getItemAt(it).uri.toString() }
+                            .toTypedArray())
                 }
             }
         }
