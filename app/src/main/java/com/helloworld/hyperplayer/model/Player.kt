@@ -109,17 +109,19 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     {
         mediaPlayer.seekTo(position)
     }
-    fun next()
+    fun next(statusUpdate: ((hasMusic: Boolean) -> Unit)? = null)
     {
         History.push(playingMusic!!)
         val nextMusic = playbackOption.nextMusic(playlist, playingMusic)
+        statusUpdate?.invoke(nextMusic != null)
         if (nextMusic != null)
         {
             play(nextMusic)
         }
     }
-    fun previous()
+    fun previous(statusUpdate: ((hasMusic: Boolean) -> Unit)? = null)
     {
+        statusUpdate?.invoke(!History.isEmpty)
         if (!History.isEmpty)
         {
             val previousMusic = History.pop()

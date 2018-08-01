@@ -65,12 +65,14 @@ class PlayerFragment : Fragment()
             buttonPlaybackOption.setImageResource(player.playbackOption.resourceId)
         }
         buttonNext.setOnClickListener {
-            player.next()
-            updateButtons()
+            player.next { hasMusic ->
+                updateButtons(hasMusic)
+            }
         }
         buttonPrevious.setOnClickListener {
-            player.previous()
-            updateButtons()
+            player.previous { hasMusic ->
+                updateButtons(hasMusic)
+            }
         }
         buttonHistory.setOnClickListener {
             val intent = Intent(activity, HistoryActivity::class.java)
@@ -93,16 +95,20 @@ class PlayerFragment : Fragment()
 
         updateMusicInfo(playlist.first())
     }
-    private fun updateButtons()
+    private fun updateButtons(playing: Boolean)
     {
-        if (player.isPlaying)
-        {
-            buttonPlayPause.setImageResource(R.drawable.ic_play_circle)
-        }
-        else
+        if (playing)
         {
             buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
         }
+        else
+        {
+            buttonPlayPause.setImageResource(R.drawable.ic_play_circle)
+        }
+    }
+    private fun updateButtons()
+    {
+        updateButtons(player.isPlaying)
     }
     private fun updateMusicInfo(music: Music)
     {
