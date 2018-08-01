@@ -3,23 +3,29 @@
   package="com.helloworld.hyperplayer">
 
   <application
+    android:name=".Application"
     android:allowBackup="false"
     android:icon="@mipmap/ic_launcher"
     android:label="@string/app_name"
     android:roundIcon="@mipmap/ic_launcher_round"
-    android:theme="@style/AppTheme"
-    android:name=".Application">
+    android:theme="@style/AppTheme">
     <activity
-      android:launchMode="singleTask"
       android:name=".view.PlayerActivity"
       android:label="@string/app_name"
+      android:launchMode="singleTask"
       android:theme="@style/AppTheme.NoActionBar">
       <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <action android:name="android.intent.action.VIEW"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
+        <action android:name="android.intent.action.MAIN" />
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+    <activity
+      android:name=".view.HistoryActivity"
+      android:launchMode="singleTask"
+      android:label="@string/history"
+      />
   </application>
 
 </manifest>

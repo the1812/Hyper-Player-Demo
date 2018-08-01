@@ -3,13 +3,9 @@ package com.helloworld.hyperplayer.model
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Handler
-import android.util.Log
 import android.widget.SeekBar
 import android.widget.TextView
 import com.helloworld.hyperplayer.Application
-import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.math.max
 import kotlin.math.min
 
 class Player(val seekBar: SeekBar, val textTime: TextView)
@@ -115,7 +111,7 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     }
     fun next()
     {
-        val nextMusic = playbackOption.next(playlist, playingMusic)
+        val nextMusic = playbackOption.nextMusic(playlist, playingMusic)
         if (nextMusic != null)
         {
             play(nextMusic)

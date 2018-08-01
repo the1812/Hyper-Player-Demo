@@ -1,7 +1,5 @@
 package com.helloworld.hyperplayer.view
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -18,16 +16,6 @@ class PlayerFragment : Fragment()
 {
     private lateinit var player: Player
     private var info: MusicInfo = MusicInfo.default
-    private val playbackNextMap = mapOf(
-        PlaybackOption.PlaylistLoop to PlaybackOption.SingleLoop,
-        PlaybackOption.SingleLoop to PlaybackOption.Random,
-        PlaybackOption.Random to PlaybackOption.PlaylistLoop
-    )
-    private val playbackResourceMap = mapOf(
-        PlaybackOption.PlaylistLoop to R.drawable.ic_repeat,
-        PlaybackOption.SingleLoop to R.drawable.ic_repeat_one,
-        PlaybackOption.Random to R.drawable.ic_shuffle
-    )
 
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
@@ -72,11 +60,15 @@ class PlayerFragment : Fragment()
             }
         )
         buttonPlaybackOption.setOnClickListener {
-            player.playbackOption = playbackNextMap[player.playbackOption]!!
-            buttonPlaybackOption.setImageResource(playbackResourceMap[player.playbackOption]!!)
+            player.playbackOption = player.playbackOption.nextOption
+            buttonPlaybackOption.setImageResource(player.playbackOption.resourceId)
         }
         buttonNext.setOnClickListener {
             player.next()
+            updateButtons()
+        }
+        buttonHistory.setOnClickListener {
+
         }
     }
 
@@ -94,6 +86,17 @@ class PlayerFragment : Fragment()
         buttonPrevious.isEnabled = true
 
         updateMusicInfo(playlist.first())
+    }
+    private fun updateButtons()
+    {
+        if (player.isPlaying)
+        {
+            buttonPlayPause.setImageResource(R.drawable.ic_play_circle)
+        }
+        else
+        {
+            buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
+        }
     }
     private fun updateMusicInfo(music: Music)
     {

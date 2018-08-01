@@ -1,12 +1,12 @@
 package com.helloworld.hyperplayer.model
 
-import android.util.Log
+import com.helloworld.hyperplayer.R
 import java.util.*
 
 enum class PlaybackOption
 {
     PlaylistLoop {
-        override fun next(playlist: Playlist, playingMusic: Music?): Music?
+        override fun nextMusic(playlist: Playlist, playingMusic: Music?): Music?
         {
             return if (playingMusic != playlist.last())
             {
@@ -18,12 +18,20 @@ enum class PlaybackOption
                 playlist.first()
             }
         }
+        override val nextOption
+            get() = SingleLoop
+        override val resourceId
+            get() = R.drawable.ic_repeat
     },
     SingleLoop {
-        override fun next(playlist: Playlist, playingMusic: Music?): Music? = playingMusic
+        override fun nextMusic(playlist: Playlist, playingMusic: Music?): Music? = playingMusic
+        override val nextOption
+            get() = Shuffle
+        override val resourceId
+            get() = R.drawable.ic_repeat_one
     },
-    Random {
-        override fun next(playlist: Playlist, playingMusic: Music?): Music?
+    Shuffle {
+        override fun nextMusic(playlist: Playlist, playingMusic: Music?): Music?
         {
             val currentIndex = playlist.indexOf(playingMusic)
             var index = 0
@@ -34,7 +42,13 @@ enum class PlaybackOption
             while (index == currentIndex)
             return playlist.elementAt(index)
         }
+        override val nextOption
+            get() = PlaylistLoop
+        override val resourceId
+            get() = R.drawable.ic_shuffle
     };
 
-    abstract fun next(playlist: Playlist, playingMusic: Music?): Music?
+    abstract fun nextMusic(playlist: Playlist, playingMusic: Music?): Music?
+    abstract val nextOption: PlaybackOption
+    abstract val resourceId: Int
 }
