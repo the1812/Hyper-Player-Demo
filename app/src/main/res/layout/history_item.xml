@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <ImageView
+    android:id="@+id/imageAlbum"
+    android:layout_width="wrap_content"
+    android:layout_height="0dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:contentDescription="@string/player_album_image"
+    android:minWidth="64dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:srcCompat="@android:color/transparent" />
+
+  <TextView
+    android:id="@+id/textTitle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+    app:layout_constraintStart_toEndOf="@+id/imageAlbum"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+    android:id="@+id/textArtist"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="16dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toEndOf="@+id/imageAlbum"
+    app:layout_constraintTop_toBottomOf="@+id/textTitle" />
+
+  <TextView
+    android:id="@+id/textSeparator"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:text="-"
+    app:layout_constraintStart_toEndOf="@+id/textArtist"
+    app:layout_constraintTop_toBottomOf="@+id/textTitle" />
+
+  <TextView
+    android:id="@+id/textAlbum"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    app:layout_constraintStart_toEndOf="@+id/textSeparator"
+    app:layout_constraintTop_toBottomOf="@+id/textTitle" />
+</android.support.constraint.ConstraintLayout>

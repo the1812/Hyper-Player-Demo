@@ -1,5 +1,6 @@
 package com.helloworld.hyperplayer.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -67,8 +68,13 @@ class PlayerFragment : Fragment()
             player.next()
             updateButtons()
         }
+        buttonPrevious.setOnClickListener {
+            player.previous()
+            updateButtons()
+        }
         buttonHistory.setOnClickListener {
-
+            val intent = Intent(activity, HistoryActivity::class.java)
+            startActivity(intent)
         }
     }
 
