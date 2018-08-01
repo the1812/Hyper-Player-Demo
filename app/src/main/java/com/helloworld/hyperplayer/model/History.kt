@@ -9,13 +9,18 @@ object History
         // TODO: read history from preferences
     }
     private val historyStack = Stack<Music>()
-    val musicList
-        get() = historyStack.toTypedArray()
+    val musicArray: Array<Music>
+        get()
+        {
+            val array = historyStack.toTypedArray()
+            array.reverse()
+            return array
+        }
     val isEmpty
         get() = historyStack.isEmpty()
 
-    fun push(music: Music) = historyStack.push(music)
-    fun pop() = historyStack.pop()
+    fun push(music: Music): Music = historyStack.push(music)
+    fun pop(): Music = historyStack.pop()
     operator fun get(index: Int): Music
     {
         return historyStack.elementAt(index)

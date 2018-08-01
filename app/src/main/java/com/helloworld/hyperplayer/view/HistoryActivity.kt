@@ -1,5 +1,6 @@
 package com.helloworld.hyperplayer.view
 
+import android.annotation.SuppressLint
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -38,8 +39,9 @@ class HistoryActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)
-        val adapter = object : ArrayAdapter<Music>(this, R.layout.history_item, History.musicList)
+        val adapter = object : ArrayAdapter<Music>(this, R.layout.history_item, History.musicArray)
         {
+            @SuppressLint("InflateParams")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View
             {
                 val music = getItem(position)

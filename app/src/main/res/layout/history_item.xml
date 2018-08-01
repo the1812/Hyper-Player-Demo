@@ -13,11 +13,10 @@
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
     android:contentDescription="@string/player_album_image"
-    android:minWidth="64dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    app:srcCompat="@android:color/transparent" />
+    app:srcCompat="@android:color/darker_gray" />
 
   <TextView
     android:id="@+id/textTitle"
