@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.helloworld.hyperplayer.R
+import com.helloworld.hyperplayer.model.History
 import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.app_bar_player.*
 import kotlinx.android.synthetic.main.content_player.*
@@ -25,6 +26,8 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
         setSupportActionBar(toolbar)
+        History.load()
+
         val toggle = ActionBarDrawerToggle(
             this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer.addDrawerListener(toggle)
@@ -137,4 +140,9 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onPause()
+    {
+        super.onPause()
+        History.save()
+    }
 }
