@@ -24,11 +24,7 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
             updatePlaybackOption()
         }
     var playlist: Playlist = Playlist()
-        set(value)
-        {
-            field = value
-            openPlaylist(value)
-        }
+        private set
     var onChangeMusic: ((music: Music) -> Unit)? = null
 
     init
@@ -49,15 +45,16 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     {
         openFile(music.path)
     }
+    fun openPlaylist(playlist: Playlist)
+    {
+        this.playlist = playlist
+        val music = playlist.first()
+        play(music)
+    }
     private fun openFile(path: String)
     {
         val playlist = Playlist(Music(path))
         openPlaylist(playlist)
-    }
-    private fun openPlaylist(playlist: Playlist)
-    {
-        val music = playlist.first()
-        play(music)
     }
     private fun play(music: Music)
     {
@@ -111,7 +108,7 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     }
     fun next(statusUpdate: ((hasMusic: Boolean) -> Unit)? = null)
     {
-        History.push(playingMusic!!)
+        History.push(playingMusic!!, playlist)
         val nextMusic = playbackOption.nextMusic(playlist, playingMusic)
         statusUpdate?.invoke(nextMusic != null)
         if (nextMusic != null)
@@ -124,8 +121,9 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
         statusUpdate?.invoke(!History.isEmpty)
         if (!History.isEmpty)
         {
-            val previousMusic = History.pop()
-            play(previousMusic)
+            val historyItem = History.pop()
+            playlist = historyItem.playlist
+            play(historyItem.music)
         }
     }
     val isPlaying

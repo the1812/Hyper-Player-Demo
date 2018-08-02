@@ -134,6 +134,7 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 }
             }
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
 }

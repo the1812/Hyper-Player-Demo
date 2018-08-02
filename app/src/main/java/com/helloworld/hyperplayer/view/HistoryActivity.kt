@@ -1,6 +1,8 @@
 package com.helloworld.hyperplayer.view
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -67,5 +69,12 @@ class HistoryActivity : AppCompatActivity()
             }
         }
         historyList.adapter = adapter
+        historyList.setOnItemClickListener { _, _, index, _ ->
+            val goBackTimes = index + 1
+            val intent = Intent()
+            intent.putExtra("goBackTimes", goBackTimes)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
     }
 }

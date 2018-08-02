@@ -1,5 +1,6 @@
 package com.helloworld.hyperplayer.view
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.fragment_player.*
 
 class PlayerFragment : Fragment()
 {
+    private val historyRequestCode = 2
     private lateinit var player: Player
     private var info: MusicInfo = MusicInfo.default
 
@@ -76,14 +78,14 @@ class PlayerFragment : Fragment()
         }
         buttonHistory.setOnClickListener {
             val intent = Intent(activity, HistoryActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, historyRequestCode)
         }
     }
 
     fun openPlaylist(vararg path: String)
     {
         val playlist = Playlist(*(path.map { Music(it) }.toTypedArray()))
-        player.playlist = playlist
+        player.openPlaylist(playlist)
         player.onChangeMusic = this::updateMusicInfo
 
         buttonPlayPause.isEnabled = true
@@ -124,7 +126,23 @@ class PlayerFragment : Fragment()
     {
         return inflater.inflate(R.layout.fragment_player, container, false)
     }
-
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
+        when (requestCode)
+        {
+            historyRequestCode ->
+            {
+                if (resultCode == RESULT_OK)
+                {
+                    val goBackTimes = data?.getIntExtra("goBackTimes", 0) ?: 0
+                    repeat(goBackTimes) {
+                        buttonPrevious.performClick()
+                    }
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
     override fun onDestroy()
     {
         super.onDestroy()
