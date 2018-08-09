@@ -76,9 +76,12 @@ class PlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
+    var optionsMenu: Menu? = null
+        private set
     override fun onCreateOptionsMenu(menu: Menu): Boolean
     {
         menuInflater.inflate(R.menu.player, menu)
+        optionsMenu = menu
         return true
     }
 

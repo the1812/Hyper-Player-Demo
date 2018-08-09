@@ -6,4 +6,8 @@
     android:orderInCategory="100"
     android:title="@string/settings"
     app:showAsAction="never" />
+  <item
+    android:visible="false"
+    android:id="@+id/action_save_playlist"
+    android:title="@string/save_playlist"/>
 </menu>

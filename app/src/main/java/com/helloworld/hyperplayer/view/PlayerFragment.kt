@@ -1,13 +1,17 @@
 package com.helloworld.hyperplayer.view
 
 import android.app.Activity.RESULT_OK
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.SeekBar
 
 import com.helloworld.hyperplayer.R
@@ -25,6 +29,7 @@ class PlayerFragment : Fragment()
         super.onActivityCreated(savedInstanceState)
         Log.d("fragment", toString())
         player = Player(seekBar, textTime)
+        player.onChangePlaylist = this::updatePlaylistStatus
 
         disableUi()
         setupListener()
@@ -47,7 +52,14 @@ class PlayerFragment : Fragment()
         buttonNext.isEnabled = true
         buttonPrevious.isEnabled = true
     }
-
+    private fun updatePlaylistStatus(playlist: Playlist)
+    {
+        if (activity is PlayerActivity)
+        {
+            val item = (activity as PlayerActivity).optionsMenu?.findItem(R.id.action_save_playlist)
+            item?.isVisible = !playlist.saved
+        }
+    }
     private fun setupListener()
     {
         buttonPlayPause.setOnClickListener {
@@ -182,6 +194,46 @@ class PlayerFragment : Fragment()
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean
+    {
+        if (item != null)
+        {
+            when (item.itemId)
+            {
+                R.id.action_save_playlist ->
+                {
+                    val builder = AlertDialog.Builder(activity)
+                    builder.setTitle(R.string.save_playlist)
+                    builder.setMessage(R.string.save_playlist_description)
+                    builder.setCancelable(true)
+                    val view = layoutInflater.inflate(R.layout.dialog_save_playlist, null)
+                    builder.setView(view)
+                    builder.setPositiveButton(R.string.ok) { dialog, _ ->
+                        val textBox = view.findViewById<EditText>(R.id.textNewName)
+                        val newName = textBox.text.toString()
+                        if (newName.isBlank())
+                        {
+                            Snackbar.make(root_layout, R.string.save_playlist_empty_name, Snackbar.LENGTH_SHORT).show()
+                        }
+                        else
+                        {
+                            if (player.playlist.name != newName)
+                            {
+                                player.playlist.rename(newName)
+                            }
+                            dialog.dismiss()
+                        }
+                    }
+                    builder.setNegativeButton(R.string.ok) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    return true
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
     override fun onDestroy()
     {

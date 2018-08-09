@@ -25,8 +25,13 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
             updatePlaybackOption()
         }
     var playlist: Playlist = Playlist()
-        private set
+        private set(value)
+        {
+            field = value
+            onChangePlaylist?.invoke(value)
+        }
     var onChangeMusic: ((music: Music) -> Unit)? = null
+    var onChangePlaylist: ((playlist: Playlist) -> Unit)? = null
 
     init
     {

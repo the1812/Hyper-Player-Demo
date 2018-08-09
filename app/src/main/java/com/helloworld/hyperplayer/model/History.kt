@@ -55,7 +55,7 @@ data class HistoryItem(val music: Music, val playlist: Playlist)
         {
             val (path, playlistName) = preferenceString.split(delimiter)
             val music = Music(path)
-            val playlist = Playlist.fromPreferenceString(playlistName)
+            val playlist = Playlist(playlistName)
             return HistoryItem(music, playlist)
         }
     }

@@ -6,6 +6,14 @@ import com.helloworld.hyperplayer.Application
 
 object Preferences
 {
+    fun exists(filename: String): Boolean
+    {
+        return Application.context.getSharedPreferences(filename, MODE_PRIVATE) != null
+    }
+    fun delete(filename: String)
+    {
+        Application.context.deleteSharedPreferences(filename)
+    }
     fun save(filename: String, key: String, data: Iterable<String>)
     {
         val editor = Application.context.getSharedPreferences(filename, MODE_PRIVATE).edit()
