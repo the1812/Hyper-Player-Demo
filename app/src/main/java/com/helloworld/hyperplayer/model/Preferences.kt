@@ -3,12 +3,13 @@ package com.helloworld.hyperplayer.model
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import com.helloworld.hyperplayer.Application
+import java.io.File
 
 object Preferences
 {
     fun exists(filename: String): Boolean
     {
-        return Application.context.getSharedPreferences(filename, MODE_PRIVATE) != null
+        return File("${Application.context.filesDir.parent}/shared_prefs/$filename.xml").exists()
     }
     fun delete(filename: String)
     {
@@ -35,5 +36,13 @@ object Preferences
     {
         val preference = Application.context.getSharedPreferences(filename, MODE_PRIVATE)
         return preference.getString(key, "")
+    }
+    fun editString(filename: String, key: String, transform: (String) -> String)
+    {
+        val preference = Application.context.getSharedPreferences(filename, MODE_PRIVATE)
+        val editor = preference.edit()
+        val result = transform(preference.getString(key, ""))
+        editor.putString(key, result)
+        editor.apply()
     }
 }

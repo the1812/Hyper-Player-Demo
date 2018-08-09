@@ -19,5 +19,5 @@
   <string name="save_playlist_description">Enter the name of playlist.</string>
   <string name="ok">OK</string>
   <string name="cancel">Cancel</string>
-  <string name="save_playlist_empty_name">Name must be not empty.</string>
+  <string name="save_playlist_invalid_name">Invalid name.</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.helloworld.hyperplayer.view
 
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Intent
@@ -17,6 +18,7 @@ import android.widget.SeekBar
 import com.helloworld.hyperplayer.R
 import com.helloworld.hyperplayer.model.*
 import kotlinx.android.synthetic.main.fragment_player.*
+import kotlin.concurrent.thread
 
 class PlayerFragment : Fragment()
 {
@@ -24,10 +26,14 @@ class PlayerFragment : Fragment()
     private lateinit var player: Player
     private var info: MusicInfo = MusicInfo.default
 
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
     override fun onActivityCreated(savedInstanceState: Bundle?)
     {
         super.onActivityCreated(savedInstanceState)
-        Log.d("fragment", toString())
         player = Player(seekBar, textTime)
         player.onChangePlaylist = this::updatePlaylistStatus
 
@@ -57,7 +63,19 @@ class PlayerFragment : Fragment()
         if (activity is PlayerActivity)
         {
             val item = (activity as PlayerActivity).optionsMenu?.findItem(R.id.action_save_playlist)
-            item?.isVisible = !playlist.saved
+            if (item != null)
+            {
+                activity?.runOnUiThread {
+                    item.isVisible = !playlist.saved
+                }
+            }
+            else
+            {
+                thread {
+                    Thread.sleep(1000)
+                    updatePlaylistStatus(playlist)
+                }
+            }
         }
     }
     private fun setupListener()
@@ -196,6 +214,7 @@ class PlayerFragment : Fragment()
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    @SuppressLint("InflateParams")
     override fun onOptionsItemSelected(item: MenuItem?): Boolean
     {
         if (item != null)
@@ -209,26 +228,32 @@ class PlayerFragment : Fragment()
                     builder.setMessage(R.string.save_playlist_description)
                     builder.setCancelable(true)
                     val view = layoutInflater.inflate(R.layout.dialog_save_playlist, null)
+                    val textBox = view.findViewById<EditText>(R.id.textNewName)
+                    if (player.playlist.saved)
+                    {
+                        textBox.setText(player.playlist.name)
+                    }
                     builder.setView(view)
                     builder.setPositiveButton(R.string.ok) { dialog, _ ->
-                        val textBox = view.findViewById<EditText>(R.id.textNewName)
                         val newName = textBox.text.toString()
-                        if (newName.isBlank())
+                        if (newName.isBlank() || newName.startsWith(Playlist.tempPrefix))
                         {
-                            Snackbar.make(root_layout, R.string.save_playlist_empty_name, Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(root_layout, R.string.save_playlist_invalid_name, Snackbar.LENGTH_SHORT).show()
                         }
                         else
                         {
                             if (player.playlist.name != newName)
                             {
                                 player.playlist.rename(newName)
+                                updatePlaylistStatus(player.playlist)
                             }
                             dialog.dismiss()
                         }
                     }
-                    builder.setNegativeButton(R.string.ok) { dialog, _ ->
+                    builder.setNegativeButton(R.string.cancel) { dialog, _ ->
                         dialog.dismiss()
                     }
+                    builder.create().show()
                     return true
                 }
             }

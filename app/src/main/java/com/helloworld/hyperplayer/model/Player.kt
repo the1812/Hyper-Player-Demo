@@ -15,7 +15,6 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     private lateinit var updateUi: Runnable
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var playingMusic: Music? = null
-    private val lastMusicKey = "lastMusic"
 
     var autoStart = true
     var playbackOption = PlaybackOption.PlaylistLoop
@@ -166,4 +165,8 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     val duration
         get() = mediaPlayer.duration
 
+    companion object
+    {
+        const val lastMusicKey = "lastMusic"
+    }
 }

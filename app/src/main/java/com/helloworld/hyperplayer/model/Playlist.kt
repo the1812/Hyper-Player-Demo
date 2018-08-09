@@ -9,29 +9,26 @@ class Playlist(var name: String) : Iterable<Music>
     private val preferenceFileName
         get() = getPreferenceFileName(name)
     private val musics = mutableListOf<Music>()
-    var saved: Boolean
-        private set
+    val saved: Boolean
+        get()
+        {
+            return Preferences.exists(preferenceFileName) && !name.startsWith(tempPrefix)
+        }
 
     override fun iterator(): Iterator<Music> = musics.iterator()
 
     init
     {
-        saved = if (Preferences.exists(name))
+        if (saved)
         {
-            val musics = Preferences.loadStringSet(getPreferenceFileName(name), preferenceKey).map { Music(it) }
+            val musics = Preferences.loadStringSet(preferenceFileName, preferenceKey).map { Music(it) }
             if (musics.isNotEmpty())
             {
                 this.musics.addAll(musics)
             }
-            true
-        }
-        else
-        {
-
-            false
         }
     }
-    constructor(vararg musics: Music) : this(UUID.randomUUID().toString().toUpperCase())
+    constructor(vararg musics: Music) : this(tempPrefix + UUID.randomUUID().toString().toUpperCase())
     {
         this.musics.addAll(musics)
     }
@@ -43,22 +40,19 @@ class Playlist(var name: String) : Iterable<Music>
     {
         Preferences.save(preferenceFileName, preferenceKey, musics.map { it.path })
     }
-    fun rename(newName: String): Boolean
+    fun rename(newName: String)
     {
-        return if (Preferences.exists(newName))
+        if (Preferences.exists(getPreferenceFileName(newName)))
         {
-            false
+            Preferences.delete(preferenceFileName)
         }
-        else
-        {
-            Preferences.delete(name)
-            name = newName
-            save()
-            true
-        }
+        History.renamePlaylist(name, newName)
+        name = newName
+        save()
     }
     companion object
     {
+        const val tempPrefix = "__temp__"
         private const val preferenceKey = "musics"
         private fun getPreferenceFileName(name: String) = "$name.playlist"
     }

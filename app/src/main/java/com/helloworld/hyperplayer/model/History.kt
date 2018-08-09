@@ -26,6 +26,23 @@ object History
     {
         return historyStack.elementAt(index)
     }
+    fun renamePlaylist(oldName: String, newName: String)
+    {
+        historyStack.filter { it.playlist.name == oldName }
+            .forEach { it.playlist.name = newName }
+        Preferences.editString(historyFileName, Player.lastMusicKey) {
+            if (it.contains(HistoryItem.delimiter))
+            {
+                val (path, name) = it.split(HistoryItem.delimiter)
+                "$path${HistoryItem.delimiter}${name.replace(oldName, newName)}"
+            }
+            else
+            {
+                it
+            }
+        }
+        save()
+    }
     fun save()
     {
         historyStack.forEach { it.playlist.save() }
@@ -50,7 +67,7 @@ data class HistoryItem(val music: Music, val playlist: Playlist)
     }
     companion object
     {
-        private const val delimiter = "|"
+        const val delimiter = "|"
         fun fromPreferenceString(preferenceString: String): HistoryItem
         {
             val (path, playlistName) = preferenceString.split(delimiter)
