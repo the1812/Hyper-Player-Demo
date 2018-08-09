@@ -69,6 +69,7 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
             {
                 start()
             }
+            autoStart = true
             onChangeMusic?.invoke(music)
             updatePlaybackOption()
         }
@@ -131,15 +132,28 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     {
         if (playingMusic != null)
         {
-            Preferences.save(History.historyFileName, lastMusicKey, playingMusic!!.path)
+            Preferences.save(History.historyFileName, lastMusicKey, HistoryItem(playingMusic!!, playlist).toPreferenceString())
         }
     }
-    fun loadLastMusic()
+    fun loadLastMusic(): Music?
     {
-        val path = Preferences.loadString(History.historyFileName, lastMusicKey)
-        if (path.isNotBlank())
+        try
         {
-            play(Music(path))
+            val historyItem = HistoryItem.fromPreferenceString(Preferences.loadString(History.historyFileName, lastMusicKey))
+            return if (historyItem.music.path.isNotBlank())
+            {
+                playlist = historyItem.playlist
+                play(historyItem.music)
+                historyItem.music
+            }
+            else
+            {
+                null
+            }
+        }
+        catch (ex: IndexOutOfBoundsException)
+        {
+            return null
         }
     }
     val isPlaying

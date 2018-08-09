@@ -1,6 +1,7 @@
 package com.helloworld.hyperplayer.model
 
 import android.content.Context.MODE_PRIVATE
+import android.util.Log
 import com.helloworld.hyperplayer.Application
 import java.util.*
 

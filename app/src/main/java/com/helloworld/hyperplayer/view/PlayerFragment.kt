@@ -112,17 +112,19 @@ class PlayerFragment : Fragment()
 
         enableUi()
         showPauseButton()
-
         updateMusicInfo(playlist.first())
     }
 
     private fun loadLastMusic()
     {
         player.autoStart = false
-        player.loadLastMusic()
-
-        enableUi()
-        showPlayButton()
+        val music = player.loadLastMusic()
+        if (music != null)
+        {
+            enableUi()
+            showPlayButton()
+            updateMusicInfo(music)
+        }
     }
     private fun updateButtons(playing: Boolean)
     {
