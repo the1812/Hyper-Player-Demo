@@ -25,9 +25,7 @@ class Playlist(val name: String) : Iterable<Music>
     }
     fun save()
     {
-        val editor = Application.context.getSharedPreferences(preferenceFileName, MODE_PRIVATE).edit()
-        editor.putStringSet(preferenceKey, musics.map { it.path }.toSet())
-        editor.apply()
+        Preferences.save(preferenceFileName, preferenceKey, musics.map { it.path })
     }
     companion object
     {

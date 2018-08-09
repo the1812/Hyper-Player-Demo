@@ -15,6 +15,7 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
     private lateinit var updateUi: Runnable
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var playingMusic: Music? = null
+    private val lastMusicKey = "lastMusic"
 
     var autoStart = true
     var playbackOption = PlaybackOption.PlaylistLoop
@@ -124,6 +125,21 @@ class Player(val seekBar: SeekBar, val textTime: TextView)
             val historyItem = History.pop()
             playlist = historyItem.playlist
             play(historyItem.music)
+        }
+    }
+    fun saveAsLastMusic()
+    {
+        if (playingMusic != null)
+        {
+            Preferences.save(History.historyFileName, lastMusicKey, playingMusic!!.path)
+        }
+    }
+    fun loadLastMusic()
+    {
+        val path = Preferences.loadString(History.historyFileName, lastMusicKey)
+        if (path.isNotBlank())
+        {
+            play(Music(path))
         }
     }
     val isPlaying

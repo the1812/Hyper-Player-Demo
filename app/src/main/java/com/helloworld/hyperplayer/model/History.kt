@@ -8,7 +8,7 @@ object History
 {
     private val historyStack = Stack<HistoryItem>()
     private const val preferenceKey = "history"
-    private const val historyFileName = "history.pref"
+    const val historyFileName = "history.pref"
     val musicArray: Array<Music>
         get()
         {
@@ -27,18 +27,13 @@ object History
     }
     fun save()
     {
-        val editor = Application.context.getSharedPreferences(historyFileName, MODE_PRIVATE).edit()
         historyStack.forEach { it.playlist.save() }
-        editor.putStringSet(preferenceKey, historyStack
-            .map { it.toPreferenceString() }
-            .toSet())
-        editor.apply()
+        Preferences.save(historyFileName, preferenceKey, historyStack.map { it.toPreferenceString() })
     }
     fun load()
     {
-        val preference = Application.context.getSharedPreferences(historyFileName, MODE_PRIVATE)
         historyStack.clear()
-        preference.getStringSet(preferenceKey, emptySet())
+        Preferences.loadStringSet(historyFileName, preferenceKey)
             .map { HistoryItem.fromPreferenceString(it) }
             .asReversed()
             .forEach {
@@ -50,13 +45,14 @@ data class HistoryItem(val music: Music, val playlist: Playlist)
 {
     fun toPreferenceString(): String
     {
-        return "${music.path}|${playlist.toPreferenceString()}"
+        return "${music.path}$delimiter${playlist.toPreferenceString()}"
     }
     companion object
     {
+        private const val delimiter = "|"
         fun fromPreferenceString(preferenceString: String): HistoryItem
         {
-            val (path, playlistName) = preferenceString.split("|")
+            val (path, playlistName) = preferenceString.split(delimiter)
             val music = Music(path)
             val playlist = Playlist.fromPreferenceString(playlistName)
             return HistoryItem(music, playlist)

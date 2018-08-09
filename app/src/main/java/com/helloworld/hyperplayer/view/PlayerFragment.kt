@@ -26,21 +26,40 @@ class PlayerFragment : Fragment()
         Log.d("fragment", toString())
         player = Player(seekBar, textTime)
 
+        disableUi()
+        setupListener()
+        loadLastMusic()
+    }
+
+    private fun disableUi()
+    {
         buttonPlayPause.isEnabled = false
         seekBar.isEnabled = false
+        textOpenFileHint.visibility = View.VISIBLE
         buttonNext.isEnabled = false
         buttonPrevious.isEnabled = false
+    }
+    private fun enableUi()
+    {
+        buttonPlayPause.isEnabled = true
+        seekBar.isEnabled = true
+        textOpenFileHint.visibility = View.GONE
+        buttonNext.isEnabled = true
+        buttonPrevious.isEnabled = true
+    }
 
+    private fun setupListener()
+    {
         buttonPlayPause.setOnClickListener {
             if (player.isPlaying)
             {
                 player.pause()
-                buttonPlayPause.setImageResource(R.drawable.ic_play_circle)
+                showPlayButton()
             }
             else
             {
                 player.start()
-                buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
+                showPauseButton()
             }
         }
         seekBar.setOnSeekBarChangeListener(
@@ -51,10 +70,12 @@ class PlayerFragment : Fragment()
                     val text = "${getTime(progress)} / ${getTime(player.duration)}"
                     textTime.text = text
                 }
+
                 override fun onStartTrackingTouch(seekbar: SeekBar?)
                 {
                     player.stopUpdateUi()
                 }
+
                 override fun onStopTrackingTouch(seekbar: SeekBar?)
                 {
                     player.seekTo(seekBar.progress)
@@ -85,29 +106,46 @@ class PlayerFragment : Fragment()
     fun openPlaylist(vararg path: String)
     {
         val playlist = Playlist(*(path.map { Music(it) }.toTypedArray()))
+        player.autoStart = true
         player.openPlaylist(playlist)
         player.onChangeMusic = this::updateMusicInfo
 
-        buttonPlayPause.isEnabled = true
-        seekBar.isEnabled = true
-        textOpenFileHint.visibility = View.GONE
-        buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
-        buttonNext.isEnabled = true
-        buttonPrevious.isEnabled = true
+        enableUi()
+        showPauseButton()
 
         updateMusicInfo(playlist.first())
+    }
+
+    private fun loadLastMusic()
+    {
+        player.autoStart = false
+        player.loadLastMusic()
+
+        enableUi()
+        showPlayButton()
     }
     private fun updateButtons(playing: Boolean)
     {
         if (playing)
         {
-            buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
+            showPauseButton()
         }
         else
         {
             buttonPlayPause.setImageResource(R.drawable.ic_play_circle)
         }
     }
+
+    private fun showPlayButton()
+    {
+        buttonPlayPause.setImageResource(R.drawable.ic_play_circle)
+    }
+
+    private fun showPauseButton()
+    {
+        buttonPlayPause.setImageResource(R.drawable.ic_pause_circle)
+    }
+
     private fun updateButtons()
     {
         updateButtons(player.isPlaying)
@@ -147,5 +185,10 @@ class PlayerFragment : Fragment()
     {
         super.onDestroy()
         player.destroy()
+    }
+    override fun onPause()
+    {
+        super.onPause()
+        player.saveAsLastMusic()
     }
 }
