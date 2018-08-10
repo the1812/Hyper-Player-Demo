@@ -13,7 +13,10 @@ object Preferences
     }
     fun delete(filename: String)
     {
-        Application.context.deleteSharedPreferences(filename)
+        if (exists(filename))
+        {
+            Application.context.deleteSharedPreferences(filename)
+        }
     }
     fun save(filename: String, key: String, data: Iterable<String>)
     {
@@ -27,6 +30,12 @@ object Preferences
         editor.putString(key, data)
         editor.apply()
     }
+    fun save(filename: String, map: Map<String, String>)
+    {
+        val editor = Application.context.getSharedPreferences(filename, MODE_PRIVATE).edit()
+        map.forEach { editor.putString(it.key, it.value) }
+        editor.apply()
+    }
     fun loadStringSet(filename: String, key: String): Iterable<String>
     {
         val preference = Application.context.getSharedPreferences(filename, MODE_PRIVATE)
@@ -36,6 +45,18 @@ object Preferences
     {
         val preference = Application.context.getSharedPreferences(filename, MODE_PRIVATE)
         return preference.getString(key, "")
+    }
+    fun loadAllString(filename: String): Map<String, String>
+    {
+        val preference = Application.context.getSharedPreferences(filename, MODE_PRIVATE)
+        val result = mutableMapOf<String, String>()
+        preference.all.forEach {
+            if (it.value is String)
+            {
+                result[it.key] = it.value as String
+            }
+        }
+        return result
     }
     fun editString(filename: String, key: String, transform: (String) -> String)
     {

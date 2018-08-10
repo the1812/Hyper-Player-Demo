@@ -40,8 +40,13 @@ class PlayerFragment : Fragment()
         disableUi()
         setupListener()
         loadLastMusic()
+        loadSettings()
     }
 
+    private fun loadSettings()
+    {
+        player.playbackOption = Settings.playbackOption
+    }
     private fun disableUi()
     {
         buttonPlayPause.isEnabled = false
@@ -116,6 +121,7 @@ class PlayerFragment : Fragment()
         buttonPlaybackOption.setOnClickListener {
             player.playbackOption = player.playbackOption.nextOption
             buttonPlaybackOption.setImageResource(player.playbackOption.resourceId)
+            Settings.playbackOption = player.playbackOption
         }
         buttonNext.setOnClickListener {
             player.next { hasMusic ->

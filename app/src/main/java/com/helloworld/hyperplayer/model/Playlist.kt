@@ -42,10 +42,7 @@ class Playlist(var name: String) : Iterable<Music>
     }
     fun rename(newName: String)
     {
-        if (Preferences.exists(getPreferenceFileName(newName)))
-        {
-            Preferences.delete(preferenceFileName)
-        }
+        Preferences.delete(preferenceFileName)
         History.renamePlaylist(name, newName)
         name = newName
         save()
